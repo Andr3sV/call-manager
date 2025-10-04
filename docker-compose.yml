@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  call-manager:
+    build: .
+    ports:
+      - "3099:3099"
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    command: npm run dev
+

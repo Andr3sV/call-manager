@@ -1,0 +1,149 @@
+### Call Manager - ElevenLabs Integration API Examples
+### Usa este archivo con la extensión REST Client de VSCode
+
+@baseUrl = http://localhost:3099
+@apiUrl = {{baseUrl}}/api/batch-calling
+
+### Health Check
+GET {{baseUrl}}/health
+
+### ============================================
+### 1. Disparar Batch de Llamadas (Inmediato)
+### ============================================
+POST {{apiUrl}}/submit
+Content-Type: application/json
+
+{
+  "call_name": "Campaña Test Inmediata",
+  "agent_id": "tu_agent_id_aqui",
+  "agent_phone_number_id": "tu_phone_number_id_aqui",
+  "recipients": [
+    {
+      "phone_number": "+1234567890",
+      "dynamic_variables": {
+        "nombre": "Juan Pérez",
+        "empresa": "Acme Corp",
+        "producto": "Premium Plan",
+        "monto": "299.99"
+      }
+    },
+    {
+      "phone_number": "+0987654321",
+      "dynamic_variables": {
+        "nombre": "María García",
+        "empresa": "Tech Solutions",
+        "producto": "Basic Plan",
+        "monto": "99.99"
+      }
+    }
+  ],
+  "scheduled_time_unix": null,
+  "phone_provider": "twilio"
+}
+
+### ============================================
+### 2. Disparar Batch de Llamadas (Programado)
+### ============================================
+POST {{apiUrl}}/submit
+Content-Type: application/json
+
+{
+  "call_name": "Campaña Programada para Mañana",
+  "agent_id": "tu_agent_id_aqui",
+  "agent_phone_number_id": "tu_phone_number_id_aqui",
+  "recipients": [
+    {
+      "phone_number": "+1234567890",
+      "dynamic_variables": {
+        "nombre": "Carlos López",
+        "recordatorio": "Cita médica a las 10am"
+      }
+    }
+  ],
+  "scheduled_time_unix": 1728086400,
+  "phone_provider": "twilio"
+}
+
+### ============================================
+### 3. Disparar Batch sin Variables Dinámicas
+### ============================================
+POST {{apiUrl}}/submit
+Content-Type: application/json
+
+{
+  "call_name": "Llamadas Simple",
+  "agent_id": "tu_agent_id_aqui",
+  "agent_phone_number_id": "tu_phone_number_id_aqui",
+  "recipients": [
+    {
+      "phone_number": "+1234567890"
+    },
+    {
+      "phone_number": "+0987654321"
+    }
+  ]
+}
+
+### ============================================
+### 4. Cancelar Batch de Llamadas
+### ============================================
+### Reemplaza "batch_id_aqui" con el ID real del batch
+POST {{apiUrl}}/batch_id_aqui/cancel
+
+### ============================================
+### 5. Obtener Información del Batch
+### ============================================
+### Reemplaza "batch_id_aqui" con el ID real del batch
+GET {{apiUrl}}/batch_id_aqui
+
+### ============================================
+### Ejemplos de Respuestas Esperadas
+### ============================================
+
+### Response de Submit (200 OK):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "batch_abc123",
+#     "phone_number_id": "phone_xyz789",
+#     "name": "Campaña Test Inmediata",
+#     "agent_id": "agent_123",
+#     "created_at_unix": 1696431600,
+#     "scheduled_time_unix": 1696435200,
+#     "total_calls_dispatched": 0,
+#     "total_calls_scheduled": 2,
+#     "last_updated_at_unix": 1696431600,
+#     "status": "pending",
+#     "agent_name": "Mi Agente",
+#     "phone_provider": "twilio"
+#   }
+# }
+
+### Response de Cancel (200 OK):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "batch_abc123",
+#     "status": "cancelled",
+#     ...
+#   }
+# }
+
+### Response de Error (400 Bad Request):
+# {
+#   "success": false,
+#   "errors": [
+#     {
+#       "msg": "call_name es requerido",
+#       "param": "call_name",
+#       "location": "body"
+#     }
+#   ]
+# }
+
+### Response de Error (500 Internal Server Error):
+# {
+#   "success": false,
+#   "error": "Error al disparar batch de llamadas: Invalid API key"
+# }
+
