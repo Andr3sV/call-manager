@@ -65,18 +65,37 @@ export const cancelBatchCall = async (req: Request, res: Response): Promise<void
       return;
     }
 
+    console.log(`🔄 Solicitud de cancelación para batch: ${batchId}`);
+
     // Llamar al servicio de ElevenLabs
     const result = await elevenLabsService.cancelBatchCall(batchId);
 
     res.status(200).json({
       success: true,
       data: result,
+      message: 'Batch cancelado exitosamente',
     });
   } catch (error) {
-    console.error('Error en cancelBatchCall:', error);
-    res.status(500).json({
+    console.error('❌ Error en cancelBatchCall:', error);
+    
+    // Determinar el código de estado apropiado
+    let statusCode = 500;
+    let errorMessage = 'Error desconocido';
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      
+      // Si el error menciona un status 400 o 404, usar códigos más apropiados
+      if (errorMessage.includes('Status: 400')) {
+        statusCode = 400;
+      } else if (errorMessage.includes('Status: 404')) {
+        statusCode = 404;
+      }
+    }
+    
+    res.status(statusCode).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Error desconocido',
+      error: errorMessage,
     });
   }
 };

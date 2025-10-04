@@ -52,11 +52,25 @@ export class ElevenLabsService {
    */
   async cancelBatchCall(batchId: string): Promise<BatchCallResponse> {
     try {
+      console.log(`📤 Intentando cancelar batch: ${batchId}`);
+      
       const response = await this.client.post<BatchCallResponse>(
         `/v1/convai/batch-calling/${batchId}/cancel`
       );
+      
+      console.log(`📥 Batch cancelado exitosamente:`, response.data);
       return response.data;
     } catch (error) {
+      // Log detallado del error antes de manejarlo
+      if (axios.isAxiosError(error)) {
+        console.error(`❌ Error al cancelar batch ${batchId}:`, {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          url: error.config?.url,
+        });
+      }
+      
       throw this.handleError(error, 'Error al cancelar batch de llamadas');
     }
   }
@@ -86,16 +100,45 @@ export class ElevenLabsService {
       const status = axiosError.response?.status;
       const errorData = axiosError.response?.data;
       
-      const message = errorData?.detail || errorData?.message || defaultMessage;
+      // Intentar obtener el mensaje de error de diferentes formas
+      let message = defaultMessage;
+      
+      if (errorData) {
+        if (typeof errorData === 'string') {
+          message = errorData;
+        } else if (errorData.detail) {
+          message = errorData.detail;
+        } else if (errorData.message) {
+          message = errorData.message;
+        } else {
+          // Si errorData es un objeto, intentar convertirlo a JSON
+          try {
+            message = JSON.stringify(errorData);
+          } catch {
+            message = 'Error desconocido de ElevenLabs';
+          }
+        }
+      }
+      
+      // Log detallado para debugging
+      console.error('Error de ElevenLabs:', {
+        status,
+        message,
+        fullError: errorData,
+        url: axiosError.config?.url,
+      });
+      
       const fullMessage = `${defaultMessage}: ${message} (Status: ${status || 'unknown'})`;
       
       return new Error(fullMessage);
     }
     
     if (error instanceof Error) {
+      console.error('Error genérico:', error.message);
       return new Error(`${defaultMessage}: ${error.message}`);
     }
     
+    console.error('Error desconocido:', error);
     return new Error(defaultMessage);
   }
 }
