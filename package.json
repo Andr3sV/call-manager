@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "description": "Servicio de integración con ElevenLabs Conversational AI para batch calling",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=18.x"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "railway:build": "npm install && npm run build",
+    "railway:start": "npm start"
   },
   "keywords": ["elevenlabs", "conversational-ai", "batch-calling", "api"],
   "author": "",

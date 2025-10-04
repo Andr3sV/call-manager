@@ -11,12 +11,12 @@ PORT=3099
 NODE_ENV=development
 
 # ElevenLabs API
-ELEVENLABS_API_KEY=sk_982fb590861db2209f173fe44c0466d34e1cca4a02ededb8
+ELEVENLABS_API_KEY=tu_api_key_aqui
 ELEVENLABS_BASE_URL=https://api.elevenlabs.io
 
 # Twilio Configuration
-TWILIO_ACCOUNT_SID=AC727ff240e4ea5eed57698f598aecf3d4
-TWILIO_AUTH_TOKEN=cdbe96eebe074fb7d2a8d65947ccbc4e
+TWILIO_ACCOUNT_SID=tu_account_sid_aqui
+TWILIO_AUTH_TOKEN=tu_auth_token_aqui
 ```
 
 ## Cómo crear el archivo .env

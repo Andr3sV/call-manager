@@ -28,10 +28,17 @@ export class ElevenLabsService {
    */
   async submitBatchCall(data: SubmitBatchCallRequest): Promise<BatchCallResponse> {
     try {
+      // Log del request que se envía a ElevenLabs
+      console.log('📤 Enviando a ElevenLabs:', JSON.stringify(data, null, 2));
+      
       const response = await this.client.post<BatchCallResponse>(
         '/v1/convai/batch-calling/submit',
         data
       );
+      
+      // Log de la respuesta de ElevenLabs
+      console.log('📥 Respuesta de ElevenLabs:', JSON.stringify(response.data, null, 2));
+      
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Error al disparar batch de llamadas');

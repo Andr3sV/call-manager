@@ -28,20 +28,24 @@ async function dispararLlamadasInmediatas() {
       recipients: [
         {
           phone_number: '+1234567890',
-          dynamic_variables: {
-            nombre: 'Juan Pérez',
-            empresa: 'Acme Corp',
-            producto: 'Premium Plan',
-            precio: '$299',
+          conversation_initiation_client_data: {
+            dynamic_variables: {
+              nombre: 'Juan Pérez',
+              empresa: 'Acme Corp',
+              producto: 'Premium Plan',
+              precio: '$299',
+            },
           },
         },
         {
           phone_number: '+0987654321',
-          dynamic_variables: {
-            nombre: 'María García',
-            empresa: 'Tech Inc',
-            producto: 'Basic Plan',
-            precio: '$99',
+          conversation_initiation_client_data: {
+            dynamic_variables: {
+              nombre: 'María García',
+              empresa: 'Tech Inc',
+              producto: 'Basic Plan',
+              precio: '$99',
+            },
           },
         },
       ],
@@ -75,9 +79,11 @@ async function dispararLlamadasProgramadas() {
       recipients: [
         {
           phone_number: '+1234567890',
-          dynamic_variables: {
-            nombre: 'Carlos',
-            recordatorio: 'Cita médica mañana a las 10am',
+          conversation_initiation_client_data: {
+            dynamic_variables: {
+              nombre: 'Carlos',
+              recordatorio: 'Cita médica mañana a las 10am',
+            },
           },
         },
       ],
@@ -185,12 +191,14 @@ async function dispararDesdeBaseDatos(contactos: any[]) {
     // Transformar datos de la base de datos al formato requerido
     const recipients = contactos.map(contacto => ({
       phone_number: contacto.telefono,
-      dynamic_variables: {
-        nombre: contacto.nombre,
-        apellido: contacto.apellido,
-        empresa: contacto.empresa,
-        // Agregar cualquier otro campo personalizado
-        ...contacto.camposPersonalizados,
+      conversation_initiation_client_data: {
+        dynamic_variables: {
+          nombre: contacto.nombre,
+          apellido: contacto.apellido,
+          empresa: contacto.empresa,
+          // Agregar cualquier otro campo personalizado
+          ...contacto.camposPersonalizados,
+        },
       },
     }));
 

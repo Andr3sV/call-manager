@@ -1,8 +1,14 @@
 // Tipos para los requests y responses de ElevenLabs API
 
+export interface ConversationInitiationClientData {
+  dynamic_variables?: Record<string, any>;
+  [key: string]: any; // Permite otras propiedades adicionales
+}
+
 export interface Recipient {
   phone_number: string;
-  dynamic_variables?: Record<string, any>;
+  id?: string;
+  conversation_initiation_client_data?: ConversationInitiationClientData;
 }
 
 export interface SubmitBatchCallRequest {
@@ -12,6 +18,7 @@ export interface SubmitBatchCallRequest {
   recipients: Recipient[];
   scheduled_time_unix?: number | null;
   phone_provider?: 'twilio' | 'sip_trunk' | null;
+  include_dynamic_variables?: boolean; // Si es false, no se enviarán dynamic_variables
 }
 
 export interface BatchCallResponse {

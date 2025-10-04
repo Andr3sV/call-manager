@@ -26,11 +26,23 @@ router.post(
       .isString()
       .notEmpty()
       .withMessage('Cada recipient debe tener un phone_number'),
+    body('recipients.*.conversation_initiation_client_data')
+      .optional()
+      .isObject()
+      .withMessage('conversation_initiation_client_data debe ser un objeto'),
+    body('recipients.*.conversation_initiation_client_data.dynamic_variables')
+      .optional()
+      .isObject()
+      .withMessage('dynamic_variables debe ser un objeto'),
     body('scheduled_time_unix').optional().isInt().withMessage('scheduled_time_unix debe ser un número entero'),
     body('phone_provider')
       .optional()
       .isIn(['twilio', 'sip_trunk'])
       .withMessage('phone_provider debe ser "twilio" o "sip_trunk"'),
+    body('include_dynamic_variables')
+      .optional()
+      .isBoolean()
+      .withMessage('include_dynamic_variables debe ser un booleano'),
   ],
   submitBatchCall
 );
