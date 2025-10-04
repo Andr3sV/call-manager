@@ -1,6 +1,8 @@
 node_modules
 dist
 .env
+.env.production
+CREDENCIALES_RAILWAY.txt
 *.log
 .DS_Store
 coverage

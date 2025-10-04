@@ -20,20 +20,24 @@ Content-Type: application/json
   "recipients": [
     {
       "phone_number": "+1234567890",
-      "dynamic_variables": {
-        "nombre": "Juan Pérez",
-        "empresa": "Acme Corp",
-        "producto": "Premium Plan",
-        "monto": "299.99"
+      "conversation_initiation_client_data": {
+        "dynamic_variables": {
+          "nombre": "Juan Pérez",
+          "empresa": "Acme Corp",
+          "producto": "Premium Plan",
+          "monto": "299.99"
+        }
       }
     },
     {
       "phone_number": "+0987654321",
-      "dynamic_variables": {
-        "nombre": "María García",
-        "empresa": "Tech Solutions",
-        "producto": "Basic Plan",
-        "monto": "99.99"
+      "conversation_initiation_client_data": {
+        "dynamic_variables": {
+          "nombre": "María García",
+          "empresa": "Tech Solutions",
+          "producto": "Basic Plan",
+          "monto": "99.99"
+        }
       }
     }
   ],
@@ -54,9 +58,11 @@ Content-Type: application/json
   "recipients": [
     {
       "phone_number": "+1234567890",
-      "dynamic_variables": {
-        "nombre": "Carlos López",
-        "recordatorio": "Cita médica a las 10am"
+      "conversation_initiation_client_data": {
+        "dynamic_variables": {
+          "nombre": "Carlos López",
+          "recordatorio": "Cita médica a las 10am"
+        }
       }
     }
   ],

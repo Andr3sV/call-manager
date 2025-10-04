@@ -21,11 +21,13 @@ Servicio REST API para integración con ElevenLabs Conversational AI Batch Calli
 ## 🔧 Instalación
 
 1. **Clonar el repositorio**:
+
 ```bash
 cd call-manager
 ```
 
 2. **Instalar dependencias**:
+
 ```bash
 npm install
 ```
@@ -44,6 +46,7 @@ TWILIO_AUTH_TOKEN=tu_auth_token
 ```
 
 4. **Compilar TypeScript** (opcional para producción):
+
 ```bash
 npm run build
 ```
@@ -51,11 +54,13 @@ npm run build
 ## 🏃 Ejecución
 
 ### Modo desarrollo (con hot-reload):
+
 ```bash
 npm run dev
 ```
 
 ### Modo producción:
+
 ```bash
 npm run build
 npm start
@@ -66,6 +71,7 @@ El servidor se iniciará en `http://localhost:3099`
 ## 📡 Endpoints API
 
 ### Base URL
+
 ```
 http://localhost:3099/api/batch-calling
 ```
@@ -77,6 +83,7 @@ http://localhost:3099/api/batch-calling
 Envía un batch de llamadas a múltiples destinatarios.
 
 #### Request Body:
+
 ```json
 {
   "call_name": "Campaña Marketing Octubre",
@@ -85,18 +92,22 @@ Envía un batch de llamadas a múltiples destinatarios.
   "recipients": [
     {
       "phone_number": "+1234567890",
-      "dynamic_variables": {
-        "nombre": "Juan",
-        "empresa": "Acme Corp",
-        "producto": "Premium Plan"
+      "conversation_initiation_client_data": {
+        "dynamic_variables": {
+          "nombre": "Juan",
+          "empresa": "Acme Corp",
+          "producto": "Premium Plan"
+        }
       }
     },
     {
       "phone_number": "+0987654321",
-      "dynamic_variables": {
-        "nombre": "María",
-        "empresa": "Tech Inc",
-        "producto": "Basic Plan"
+      "conversation_initiation_client_data": {
+        "dynamic_variables": {
+          "nombre": "María",
+          "empresa": "Tech Inc",
+          "producto": "Basic Plan"
+        }
       }
     }
   ],
@@ -106,16 +117,19 @@ Envía un batch de llamadas a múltiples destinatarios.
 ```
 
 #### Parámetros:
+
 - `call_name` (string, requerido): Nombre descriptivo del batch
 - `agent_id` (string, requerido): ID del agente de ElevenLabs
 - `agent_phone_number_id` (string, requerido): ID del número de teléfono
 - `recipients` (array, requerido): Lista de destinatarios con sus números y variables dinámicas
   - `phone_number` (string, requerido): Número de teléfono en formato E.164
-  - `dynamic_variables` (object, opcional): Variables personalizadas para cada llamada
+  - `conversation_initiation_client_data` (object, opcional): Datos de inicialización de la conversación
+    - `dynamic_variables` (object, opcional): Variables personalizadas para cada llamada (ej: nombre, empresa, etc.)
 - `scheduled_time_unix` (number, opcional): Timestamp Unix para programar las llamadas (null = inmediato)
 - `phone_provider` (string, opcional): "twilio" o "sip_trunk" (null = default)
 
 #### Response (200 OK):
+
 ```json
 {
   "success": true,
@@ -137,6 +151,7 @@ Envía un batch de llamadas a múltiples destinatarios.
 ```
 
 #### Ejemplo cURL:
+
 ```bash
 curl -X POST http://localhost:3099/api/batch-calling/submit \
   -H "Content-Type: application/json" \
@@ -147,12 +162,13 @@ curl -X POST http://localhost:3099/api/batch-calling/submit \
     "recipients": [
       {
         "phone_number": "+1234567890",
-        "dynamic_variables": {
-          "nombre": "Juan"
+        "conversation_initiation_client_data": {
+          "dynamic_variables": {
+            "nombre": "Juan"
+          }
         }
       }
     ],
-    "scheduled_time_unix": null,
     "phone_provider": "twilio"
   }'
 ```
@@ -166,9 +182,11 @@ curl -X POST http://localhost:3099/api/batch-calling/submit \
 Cancela un batch de llamadas en ejecución y marca todos los destinatarios como cancelados.
 
 #### URL Parameters:
+
 - `batchId` (string, requerido): ID del batch a cancelar
 
 #### Response (200 OK):
+
 ```json
 {
   "success": true,
@@ -190,6 +208,7 @@ Cancela un batch de llamadas en ejecución y marca todos los destinatarios como 
 ```
 
 #### Ejemplo cURL:
+
 ```bash
 curl -X POST http://localhost:3099/api/batch-calling/batch_abc123/cancel
 ```
@@ -203,9 +222,11 @@ curl -X POST http://localhost:3099/api/batch-calling/batch_abc123/cancel
 Obtiene información detallada de un batch incluyendo todos los destinatarios y su estado.
 
 #### URL Parameters:
+
 - `batchId` (string, requerido): ID del batch a consultar
 
 #### Response (200 OK):
+
 ```json
 {
   "success": true,
@@ -245,6 +266,7 @@ Obtiene información detallada de un batch incluyendo todos los destinatarios y 
 ```
 
 #### Ejemplo cURL:
+
 ```bash
 curl http://localhost:3099/api/batch-calling/batch_abc123
 ```
@@ -258,6 +280,7 @@ curl http://localhost:3099/api/batch-calling/batch_abc123
 Verifica que el servicio está funcionando correctamente.
 
 #### Response (200 OK):
+
 ```json
 {
   "status": "ok",
@@ -287,6 +310,16 @@ Cada destinatario individual puede tener estos estados:
 - `completed`: La llamada se completó exitosamente
 - `failed`: La llamada falló
 - `cancelled`: La llamada fue cancelada
+
+## ⚠️ Importante: Dynamic Variables
+
+Las `dynamic_variables` son **opcionales** pero requieren configuración en ElevenLabs:
+
+- ✅ **Funcionan** si el agente está configurado para usarlas
+- ❌ **Causan que las llamadas se cuelguen** si el agente NO está configurado
+- 💡 **Recomendación**: Omite `dynamic_variables` hasta configurar tu agente en ElevenLabs
+
+Ver `PROBLEMA_DYNAMIC_VARIABLES.md` para más detalles.
 
 ## 🔒 Seguridad
 
@@ -362,6 +395,7 @@ Todos los endpoints retornan errores en el siguiente formato:
 ```
 
 Códigos de estado HTTP:
+
 - `200`: Éxito
 - `400`: Error de validación en el request
 - `404`: Recurso no encontrado

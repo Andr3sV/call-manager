@@ -20,7 +20,19 @@ export const submitBatchCall = async (req: Request, res: Response): Promise<void
       return;
     }
 
-    const data: SubmitBatchCallRequest = req.body;
+    let data: SubmitBatchCallRequest = req.body;
+
+    // Si include_dynamic_variables es false, eliminar todas las dynamic_variables
+    if (req.body.include_dynamic_variables === false) {
+      data = {
+        ...data,
+        recipients: data.recipients.map(recipient => ({
+          phone_number: recipient.phone_number,
+          id: recipient.id,
+          // Omitir conversation_initiation_client_data con dynamic_variables
+        })),
+      };
+    }
 
     // Llamar al servicio de ElevenLabs
     const result = await elevenLabsService.submitBatchCall(data);
